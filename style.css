@@ -1,0 +1,231 @@
+@charset "UTF-8";
+/*Обнуление*/
+* {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+*, *:before, *:after {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+:focus, :active {
+	outline: none;
+}
+
+a:focus, a:active {
+	outline: none;
+}
+
+nav, footer, header, aside {
+	display: block;
+}
+
+html, body {
+	height: 100%;
+	width: 100%;
+	font-size: 100%;
+	line-height: 1;
+	font-size: 16px;
+	background-color: #0b1d26;
+	color: #fff;
+	font-family: "PT Sans";
+	-ms-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+	font-family: inherit;
+}
+
+input::-ms-clear {
+	display: none;
+}
+
+button {
+	cursor: pointer;
+}
+
+button::-moz-focus-inner {
+	padding: 0;
+	border: 0;
+}
+
+a, a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+ul li {
+	list-style: none;
+}
+
+img {
+	vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-size: inherit;
+	font-weight: inherit;
+}
+/*--------------------*/
+@font-face {
+  font-family: 'fontello';
+  src: url('fonts/fontello.eot?5200390');
+  src: url('fonts/fontello.eot?5200390#iefix') format('embedded-opentype'),
+       url('fonts/fontello.woff2?5200390') format('woff2'),
+       url('fonts/fontello.woff?5200390') format('woff'),
+       url('fonts/fontello.ttf?5200390') format('truetype'),
+       url('fonts/fontello.svg?5200390#fontello') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'fontello';
+    src: url('../font/fontello.svg?5200390#fontello') format('svg');
+  }
+}
+*/
+ 
+ [class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.icon-ok:before { content: '\e800'; } /* '' */
+.icon-down-open:before { content: '\f004'; } /* '' */
+
+
+.wrapper{
+	min-height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.select {
+  width: 116px;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid #E4E4E4;
+  position: relative;
+}
+
+.select__body{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 500px;
+	height: 300px;
+	background-color: gray;
+}
+
+.select__list{
+	position: absolute;
+	width: 100%;
+	top: 50px;
+	left: 0;
+	display: none;
+}
+
+.select__item{
+	height: 50px;
+	display: flex;
+	align-items: center;
+	background-color: #fff;
+	padding-left: 20px;
+	cursor: pointer;
+}
+
+.select__text{
+	font-family: "Montserrat SemiBold";
+	font-size: 14px;
+	text-transform: uppercase;
+	color: black;
+}
+
+.select__item._active > .select__text{
+	color: green;
+}
+
+.select__item._active > i{
+	opacity: 1;
+}
+
+.select__image{
+	width: 26px;
+	margin-left: 10px;
+}
+
+.select__item > i{
+	font-size: 14px;
+	color: green;
+	padding-left: 8px;
+	opacity: 0;
+	transition: opacity 0.3s ease 0s;
+}
+
+.select__trigger{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	padding-left: 20px;
+	font-family: "Montserrat SemiBold";
+	font-size: 14px;
+	text-transform: uppercase;
+	position: relative;
+}
+
+.select__trigger._active ~ .select__list{
+	display: block;
+}
+
+.select__trigger._active > i{
+	transform: rotate(180deg);
+}
+
+.trigger__icon{
+	position: absolute;
+	top: 15px;
+	right: 10px;
+}

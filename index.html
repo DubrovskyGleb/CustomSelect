@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="style.css">
+		<title>Custom select</title>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="select__body">
+				<select class="selectDefault">
+					<option class="selectDefault__option" value="ru">ru</option>
+					<option class="selectDefault__option" value="en">en</option>
+					<option class="selectDefault__option" value="cn">cn</option>
+				</select>
+				<div class="select">
+					<button class="select__trigger">
+						<span class="select__text trigger__text"></span>
+						<img class="select__image trigger__image" alt="flag">
+						<i class="trigger__icon icon-down-open"></i>
+					</button>
+					<ul class="select__list">
+						<li id="id1" data-value="ru" class="select__item _active">
+							<span class="select__text">Ru</span>
+							<img class="select__image" src="img/ru.png" alt="flag">
+							<i class="icon-ok"></i>
+						</li>
+						<li id="id2" data-value="en" class="select__item">
+							<span class="select__text">En</span>
+							<img class="select__image" src="img/en.png" alt="flag">
+							<i class="icon-ok"></i>
+						</li>
+						<li id="id3" data-value="cn" class="select__item">
+							<span class="select__text">Cn</span>
+							<img class="select__image" src="img/cn.png" alt="flag">
+							<i class="icon-ok"></i>
+						</li>	
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="main.js"></script>
+	</body>
+</html>
