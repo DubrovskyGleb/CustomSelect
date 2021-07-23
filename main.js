@@ -1,109 +1,160 @@
-const trigger = document.querySelector('.select__trigger');
-const selectCustomItems = document.querySelectorAll('.select__item');
-const triggerImage = document.querySelector('.trigger__image');
-const triggerText = document.querySelector('.trigger__text');
-const selectDefault = document.querySelector('.selectDefault');
-const selectDefaultItems = document.querySelectorAll('.selectDefault__option');
-const selectCustom = document.querySelector('.select');
-let selectLang = "ru";
+const selectCustom = document.querySelectorAll('.selectCustom');
 
-document.addEventListener('click', mouseNavigationSelect);
+if (selectCustom.length > 0) {
 
-selectDefault.onfocus = function () {
-	selectDefault.addEventListener('keydown', keyboardNavigationSelect);
-};
+	selectTrigger();
 
-selectTrigger(selectLang);
+	function selectTrigger(dataItem, selectId) {
+		//Выставляет выбранное значение для всех select
+		if (arguments.length === 0) {
 
-//Использование мыши
-function mouseNavigationSelect(e) {
-	//открытие и закрытие меню нажатием на trigger
-	if (e.target.closest('.select__trigger')) {
-		trigger.classList.toggle('_active');
-	}
-	//закрытие меню при нажатии вне его
-	if (!e.target.closest('.select') && trigger.classList.contains('_active')) {
-		trigger.classList.remove('_active');
-	}
+			for (let index = 0; index < selectCustom.length; index++) {
+				const currentSelect = selectCustom[index];
+				const selected = currentSelect.getAttribute('data-selected');
 
-	changeCustomItem(e);
-};
-
-function changeCustomItem(e) {
-	if (e.target.closest('.select__item')) {
-		let parentItem = e.target.closest('.select__item');
-		let dataItem = parentItem.getAttribute('data-value');
-
-		selectTrigger(dataItem);
-
-		if (!parentItem.classList.contains('_active')) {
-			for (let i = 0; i < selectCustomItems.length; i++) {
-				selectCustomItems[i].classList.remove('_active');
+				changeTriggerContent(currentSelect, selected);
+				changeSelectDefaultValue(currentSelect, selected);
 			}
-			parentItem.classList.add('_active');
+		}
+		//Выставляет выбранное значение для конкретного select
+		if (arguments.length > 0) {
+			const currentSelect = document.getElementById(selectId);
+			const selected = dataItem;
+
+			changeTriggerContent(currentSelect, selected)
+			changeSelectDefaultValue(currentSelect, selected);
+		}
+	}
+
+	//Передача значения в selectDefault
+	function changeSelectDefaultValue(currentSelect, selected) {
+		const selectDefaultArr = currentSelect.querySelectorAll('option');
+
+		for (let i = 0; i < selectDefaultArr.length; i++) {
+			let optionValue = selectDefaultArr[i].getAttribute('value');
+
+			if (optionValue === selected) {
+				selectDefaultArr[i].selected = true;
+			}
+		}
+	}
+
+	//Вставка контента в trigger
+	function changeTriggerContent(currentSelect, selected) {
+		const triggerImage = currentSelect.querySelector('.trigger__image');
+		const triggerText = currentSelect.querySelector('.trigger__text');
+
+		triggerImage.src = `img/${selected}.png`;
+		triggerText.innerHTML = selected;
+	}
+
+	const selectCustomArr = document.querySelectorAll('.selectCustom');
+
+	for (let index = 0; index < selectCustomArr.length; index++) {
+		let selectDefault = selectCustomArr[index].querySelector('.selectDefault');
+		let trigger = selectCustomArr[index].querySelector('.select__trigger');
+
+		selectDefault.onfocus = function () {
+			selectDefault.addEventListener('keydown', keyboardNavigationSelect(trigger));
+			selectDefault.addEventListener('keyup', changeMenuElem);
+		};
+
+		selectDefault.onblur = function (e) {
 			trigger.classList.remove('_active');
-		} else {
-			trigger.classList.remove('_active');
-			return;
-		}
+		};
 	}
-}
 
-//в кнопку подставляет нужный язык
-function selectTrigger(selectLang) {
-	triggerImage.src = `img/${selectLang}.png`;
-	triggerText.innerHTML = selectLang;
+	document.addEventListener('click', customSelect);
 
-	//цикл для передачи значения в selectDefault
-	for (let i = 0; i < selectDefaultItems.length; i++) {
-		let optionValue = selectDefaultItems[i].getAttribute('value');
+	function customSelect(e) {
+		if (e.target.closest('.selectCustom')) {
+			const currentSelect = e.target.closest('.selectCustom');
+			const trigger = currentSelect.querySelector('.select__trigger');
 
-		if (optionValue === selectLang) {
-			selectDefaultItems[i].selected = true;
-		}
-	}
-};
+			mouseNavigationSelect(e);
 
-function selectCustomItem(currentValue) {
+			function mouseNavigationSelect(e) {
+				//открытие и закрытие меню нажатием на trigger
+				if (e.target.closest('.select__trigger')) {
+					trigger.classList.toggle('_active');
+				}
+				//закрытие меню при нажатии вне его
+				if (!e.target.closest('.select') && trigger.classList.contains('_active')) {
+					trigger.classList.remove('_active');
+				}
 
-	for (let i = 0; i < selectCustomItems.length; i++) {
-		selectCustomItems[i].classList.remove('_active');
-		let listItemData = selectCustomItems[i].getAttribute('data-value');
-		if (currentValue == listItemData) {
-			selectCustomItems[i].classList.add('_active');
+				changeCustomItem(e);
+			};
 		}
 	}
 
-}
+	function selectCustomItem(currentValue, selectId) {
+		const currentSelect = document.getElementById(selectId);
+		const selectCustomItems = currentSelect.querySelectorAll('.select__item');
 
-function changeMenuElem(e) {
+		for (let i = 0; i < selectCustomItems.length; i++) {
+			selectCustomItems[i].classList.remove('_active');
+			let listItemData = selectCustomItems[i].getAttribute('data-value');
+			if (currentValue == listItemData) {
+				selectCustomItems[i].classList.add('_active');
+			}
+		}
 
-	let currentValue = e.target.value;
-
-	selectTrigger(currentValue);
-
-	selectCustomItem(currentValue);
-}
-
-//Использование клавиатуры
-function keyboardNavigationSelect(e) {
-
-	selectDefault.addEventListener('keyup', changeMenuElem);
-
-	//press Enter
-	if (e.keyCode === 13) {
-		e.preventDefault();
-		trigger.classList.toggle('_active');
-	}
-	//press Space
-	if (e.keyCode === 32) {
-		e.preventDefault();
-		trigger.classList.add('_active');
 	}
 
-	// press ESC
-	if (e.keyCode === 27) {
-		e.preventDefault();
-		trigger.classList.remove('_active');
+	//передача значения в selectCustom
+	function changeMenuElem(e) {
+		const currentSelect = e.target.closest('.selectCustom');
+		const selectId = currentSelect.getAttribute('id');
+		const currentValue = e.target.value;
+
+		selectTrigger(currentValue, selectId);
+		selectCustomItem(currentValue, selectId);
+	}
+
+	function changeCustomItem(e) {
+		if (e.target.closest('.select__item')) {
+			const parent = e.target.closest('.selectCustom');
+			const selectId = parent.getAttribute('id');
+			const selectCustomItems = parent.querySelectorAll('.select__item');
+			const trigger = parent.querySelector('.select__trigger');
+			const currentItem = e.target.closest('.select__item');
+			const dataItem = currentItem.getAttribute('data-value');
+
+			selectTrigger(dataItem, selectId);
+
+			if (!currentItem.classList.contains('_active')) {
+				for (let i = 0; i < selectCustomItems.length; i++) {
+					selectCustomItems[i].classList.remove('_active');
+				}
+				currentItem.classList.add('_active');
+				trigger.classList.remove('_active');
+			} else {
+				trigger.classList.remove('_active');
+				return;
+			}
+		}
+	}
+
+	//Использование клавиатуры
+	function keyboardNavigationSelect(trigger) {
+		//Конструкция замыкания, чтобы передать параметр и событие одновременно
+		return function (e) {
+			//press Enter
+			if (e.keyCode === 13) {
+				e.preventDefault();
+				trigger.classList.toggle('_active');
+			}
+			//press Space
+			if (e.keyCode === 32) {
+				e.preventDefault();
+				trigger.classList.add('_active');
+			}
+			// press ESC
+			if (e.keyCode === 27) {
+				e.preventDefault();
+				trigger.classList.remove('_active');
+			}
+		}
 	}
 }

@@ -147,7 +147,9 @@ h1, h2, h3, h4, h5, h6 {
   height: 50px;
   border-radius: 5px;
   border: 1px solid #E4E4E4;
-  position: relative;
+  /* position: relative; */
+  position: absolute;
+  top: 100px;
 }
 
 .select__body{
@@ -157,6 +159,11 @@ h1, h2, h3, h4, h5, h6 {
 	width: 500px;
 	height: 300px;
 	background-color: gray;
+	
+}
+
+.selectCustom{
+	position: relative;
 }
 
 .select__list{
@@ -228,4 +235,11 @@ h1, h2, h3, h4, h5, h6 {
 	position: absolute;
 	top: 15px;
 	right: 10px;
+}
+.selectDefault{
+	width: 116px;
+  	height: 50px;
+	border-radius: 5px;
+	/* position: absolute;
+	top: 0; */
 }
