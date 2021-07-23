@@ -2,32 +2,59 @@ const selectCustom = document.querySelectorAll('.selectCustom');
 
 if (selectCustom.length > 0) {
 
-	selectTrigger();
+	shellTrigger();
+	focusBlur();
 
-	function selectTrigger(dataItem, selectId) {
-		//Выставляет выбранное значение для всех select
+	document.addEventListener('click', mouseNavigationSelect);
+
+	//Определение значения для триггера оболочки
+	function shellTrigger(dataItem, selectId) {
+		//Выставляет выбранное значение для всех оболочек при загрузке страницы
 		if (arguments.length === 0) {
 
 			for (let index = 0; index < selectCustom.length; index++) {
 				const currentSelect = selectCustom[index];
 				const selected = currentSelect.getAttribute('data-selected');
 
-				changeTriggerContent(currentSelect, selected);
-				changeSelectDefaultValue(currentSelect, selected);
+				intoShellTrigger(currentSelect, selected);
+				sendNativeValue(currentSelect, selected);
 			}
 		}
-		//Выставляет выбранное значение для конкретного select
+		//Выставляет выбранное значение для конкретной оболочки
 		if (arguments.length > 0) {
 			const currentSelect = document.getElementById(selectId);
 			const selected = dataItem;
 
-			changeTriggerContent(currentSelect, selected)
-			changeSelectDefaultValue(currentSelect, selected);
+			intoShellTrigger(currentSelect, selected)
+			sendNativeValue(currentSelect, selected);
 		}
 	}
 
-	//Передача значения в selectDefault
-	function changeSelectDefaultValue(currentSelect, selected) {
+	//Вставка контента в триггер оболочки
+	function intoShellTrigger(currentSelect, selected) {
+		const triggerImage = currentSelect.querySelector('.trigger__image');
+		const triggerText = currentSelect.querySelector('.trigger__text');
+
+		triggerImage.src = `img/${selected}.png`;
+		triggerText.innerHTML = selected;
+	}
+
+	//Определение активного элемента списка в оболочке
+	function shellActiveItem(currentValue, selectId) {
+		const currentSelect = document.getElementById(selectId);
+		const shellListItems = currentSelect.querySelectorAll('.select__item');
+
+		for (let i = 0; i < shellListItems.length; i++) {
+			shellListItems[i].classList.remove('_active');
+			let listItemData = shellListItems[i].getAttribute('data-value');
+			if (currentValue == listItemData) {
+				shellListItems[i].classList.add('_active');
+			}
+		}
+	}
+
+	//Передача значения data-selected в дефолтный select 
+	function sendNativeValue(currentSelect, selected) {
 		const selectDefaultArr = currentSelect.querySelectorAll('option');
 
 		for (let i = 0; i < selectDefaultArr.length; i++) {
@@ -39,93 +66,48 @@ if (selectCustom.length > 0) {
 		}
 	}
 
-	//Вставка контента в trigger
-	function changeTriggerContent(currentSelect, selected) {
-		const triggerImage = currentSelect.querySelector('.trigger__image');
-		const triggerText = currentSelect.querySelector('.trigger__text');
-
-		triggerImage.src = `img/${selected}.png`;
-		triggerText.innerHTML = selected;
-	}
-
-	const selectCustomArr = document.querySelectorAll('.selectCustom');
-
-	for (let index = 0; index < selectCustomArr.length; index++) {
-		let selectDefault = selectCustomArr[index].querySelector('.selectDefault');
-		let trigger = selectCustomArr[index].querySelector('.select__trigger');
-
-		selectDefault.onfocus = function () {
-			selectDefault.addEventListener('keydown', keyboardNavigationSelect(trigger));
-			selectDefault.addEventListener('keyup', changeMenuElem);
-		};
-
-		selectDefault.onblur = function (e) {
-			trigger.classList.remove('_active');
-		};
-	}
-
-	document.addEventListener('click', customSelect);
-
-	function customSelect(e) {
-		if (e.target.closest('.selectCustom')) {
-			const currentSelect = e.target.closest('.selectCustom');
-			const trigger = currentSelect.querySelector('.select__trigger');
-
-			mouseNavigationSelect(e);
-
-			function mouseNavigationSelect(e) {
-				//открытие и закрытие меню нажатием на trigger
-				if (e.target.closest('.select__trigger')) {
-					trigger.classList.toggle('_active');
-				}
-				//закрытие меню при нажатии вне его
-				if (!e.target.closest('.select') && trigger.classList.contains('_active')) {
-					trigger.classList.remove('_active');
-				}
-
-				changeCustomItem(e);
-			};
-		}
-	}
-
-	function selectCustomItem(currentValue, selectId) {
-		const currentSelect = document.getElementById(selectId);
-		const selectCustomItems = currentSelect.querySelectorAll('.select__item');
-
-		for (let i = 0; i < selectCustomItems.length; i++) {
-			selectCustomItems[i].classList.remove('_active');
-			let listItemData = selectCustomItems[i].getAttribute('data-value');
-			if (currentValue == listItemData) {
-				selectCustomItems[i].classList.add('_active');
-			}
-		}
-
-	}
-
-	//передача значения в selectCustom
-	function changeMenuElem(e) {
+	//Передача значения дефолтного select в оболочку
+	function sendShellValue(e) {
 		const currentSelect = e.target.closest('.selectCustom');
 		const selectId = currentSelect.getAttribute('id');
 		const currentValue = e.target.value;
 
-		selectTrigger(currentValue, selectId);
-		selectCustomItem(currentValue, selectId);
+		shellTrigger(currentValue, selectId);
+		shellActiveItem(currentValue, selectId);
 	}
 
+	//Установка слушателей на оболочку при фокусировке и закрытие списка при потере фокуса
+	function focusBlur() {
+		for (let index = 0; index < selectCustom.length; index++) {
+			let selectDefault = selectCustom[index].querySelector('.selectDefault');
+			let trigger = selectCustom[index].querySelector('.select__trigger');
+
+			selectDefault.onfocus = function () {
+				selectDefault.addEventListener('keydown', keyboardNavigationSelect(trigger));
+				selectDefault.addEventListener('keyup', sendShellValue);
+			};
+
+			selectDefault.onblur = function (e) {
+				trigger.classList.remove('_active');
+			};
+		}
+	}
+
+	//Выбор элемента и закрытие списка оболочки
 	function changeCustomItem(e) {
 		if (e.target.closest('.select__item')) {
 			const parent = e.target.closest('.selectCustom');
 			const selectId = parent.getAttribute('id');
-			const selectCustomItems = parent.querySelectorAll('.select__item');
+			const shellListItems = parent.querySelectorAll('.select__item');
 			const trigger = parent.querySelector('.select__trigger');
 			const currentItem = e.target.closest('.select__item');
 			const dataItem = currentItem.getAttribute('data-value');
 
-			selectTrigger(dataItem, selectId);
+			shellTrigger(dataItem, selectId);
 
 			if (!currentItem.classList.contains('_active')) {
-				for (let i = 0; i < selectCustomItems.length; i++) {
-					selectCustomItems[i].classList.remove('_active');
+				for (let i = 0; i < shellListItems.length; i++) {
+					shellListItems[i].classList.remove('_active');
 				}
 				currentItem.classList.add('_active');
 				trigger.classList.remove('_active');
@@ -133,6 +115,25 @@ if (selectCustom.length > 0) {
 				trigger.classList.remove('_active');
 				return;
 			}
+		}
+	}
+
+	//Использование мыши
+	function mouseNavigationSelect(e) {
+		if (e.target.closest('.selectCustom')) {
+			const currentSelect = e.target.closest('.selectCustom');
+			const trigger = currentSelect.querySelector('.select__trigger');
+
+			//открытие и закрытие меню нажатием на trigger
+			if (e.target.closest('.select__trigger')) {
+				trigger.classList.toggle('_active');
+			}
+			//закрытие меню при нажатии вне его
+			if (!e.target.closest('.select') && trigger.classList.contains('_active')) {
+				trigger.classList.remove('_active');
+			}
+
+			changeCustomItem(e);
 		}
 	}
 
