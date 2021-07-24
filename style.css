@@ -142,7 +142,7 @@ h1, h2, h3, h4, h5, h6 {
 	align-items: center;
 }
 
-.select {
+.selectShell {
   width: 116px;
   height: 50px;
   border-radius: 5px;
@@ -211,7 +211,7 @@ h1, h2, h3, h4, h5, h6 {
 	transition: opacity 0.3s ease 0s;
 }
 
-.select__trigger{
+.selectShell__trigger{
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -223,11 +223,11 @@ h1, h2, h3, h4, h5, h6 {
 	position: relative;
 }
 
-.select__trigger._active ~ .select__list{
+.selectShell__trigger._active ~ .select__list{
 	display: block;
 }
 
-.select__trigger._active > i{
+.selectShell__trigger._active > i{
 	transform: rotate(180deg);
 }
 
@@ -236,7 +236,7 @@ h1, h2, h3, h4, h5, h6 {
 	top: 15px;
 	right: 10px;
 }
-.selectDefault{
+.selectCustom > select{
 	width: 116px;
   	height: 50px;
 	border-radius: 5px;

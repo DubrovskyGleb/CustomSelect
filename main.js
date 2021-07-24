@@ -14,10 +14,12 @@ if (selectCustom.length > 0) {
 
 			for (let index = 0; index < selectCustom.length; index++) {
 				const currentSelect = selectCustom[index];
+				const selectId = currentSelect.getAttribute('id');
 				const selected = currentSelect.getAttribute('data-selected');
 
 				intoShellTrigger(currentSelect, selected);
 				sendNativeValue(currentSelect, selected);
+				shellActiveItem(selected, selectId);
 			}
 		}
 		//Выставляет выбранное значение для конкретной оболочки
@@ -79,8 +81,8 @@ if (selectCustom.length > 0) {
 	//Установка слушателей на оболочку при фокусировке и закрытие списка при потере фокуса
 	function focusBlur() {
 		for (let index = 0; index < selectCustom.length; index++) {
-			let selectDefault = selectCustom[index].querySelector('.selectDefault');
-			let trigger = selectCustom[index].querySelector('.select__trigger');
+			let selectDefault = selectCustom[index].querySelector('select');
+			let trigger = selectCustom[index].querySelector('.selectShell__trigger');
 
 			selectDefault.onfocus = function () {
 				selectDefault.addEventListener('keydown', keyboardNavigationSelect(trigger));
@@ -99,7 +101,7 @@ if (selectCustom.length > 0) {
 			const parent = e.target.closest('.selectCustom');
 			const selectId = parent.getAttribute('id');
 			const shellListItems = parent.querySelectorAll('.select__item');
-			const trigger = parent.querySelector('.select__trigger');
+			const trigger = parent.querySelector('.selectShell__trigger');
 			const currentItem = e.target.closest('.select__item');
 			const dataItem = currentItem.getAttribute('data-value');
 
@@ -122,14 +124,14 @@ if (selectCustom.length > 0) {
 	function mouseNavigationSelect(e) {
 		if (e.target.closest('.selectCustom')) {
 			const currentSelect = e.target.closest('.selectCustom');
-			const trigger = currentSelect.querySelector('.select__trigger');
+			const trigger = currentSelect.querySelector('.selectShell__trigger');
 
 			//открытие и закрытие меню нажатием на trigger
-			if (e.target.closest('.select__trigger')) {
+			if (e.target.closest('.selectShell__trigger')) {
 				trigger.classList.toggle('_active');
 			}
 			//закрытие меню при нажатии вне его
-			if (!e.target.closest('.select') && trigger.classList.contains('_active')) {
+			if (!e.target.closest('.selectShell') && trigger.classList.contains('_active')) {
 				trigger.classList.remove('_active');
 			}
 
