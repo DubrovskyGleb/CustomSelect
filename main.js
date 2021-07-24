@@ -2,7 +2,58 @@ const selectCustom = document.querySelectorAll('.selectCustom');
 
 if (selectCustom.length > 0) {
 
+	createShellSelect();
+
+	//Создание оболочки
+	function createShellSelect() {
+		for (let index = 0; index < selectCustom.length; index++) {
+			let base = '';
+
+			base += `<div class="selectShell">`;
+			base += createShellTrigger();
+			base += createShellList(selectCustom[index]);
+			base += `</div>`;
+
+			selectCustom[index].insertAdjacentHTML('beforeEnd', base);
+		}
+
+	}
+
+	//Создание листа оболочки
+	function createShellList(currentSelect) {
+		let shellList = '';
+		// const currentSelect = selectCustom[index];
+		const options = currentSelect.querySelectorAll('option');
+		shellList += `<ul class="select__list">`;
+		for (let index = 0; index < options.length; index++) {
+			let optionValue = options[index].value;
+			shellList += `<li data-value="${optionValue}" class="select__item">`;
+			shellList += `<span class="select__text">${optionValue}</span>`;
+			shellList += `<img class="select__image" src="img/${optionValue}.png" alt="flag">`;
+			shellList += `<i class="icon-ok"></i>`;
+			shellList += `</li>`;
+		}
+		shellList += `</ul>`;
+
+
+		return shellList;
+	};
+
+	//Создание триггера оболочки
+	function createShellTrigger() {
+		let shellTrigger = '';
+
+		shellTrigger += `<div class="selectShell__trigger">`;
+		shellTrigger += `<span class="select__text trigger__text"></span>`;
+		shellTrigger += `<img class="select__image trigger__image" alt="flag">`;
+		shellTrigger += `<i class="trigger__icon icon-down-open"></i>`;
+		shellTrigger += `</div>`;
+
+		return shellTrigger;
+	};
+
 	shellTrigger();
+
 	focusBlur();
 
 	document.addEventListener('click', mouseNavigationSelect);
@@ -44,13 +95,13 @@ if (selectCustom.length > 0) {
 	//Определение активного элемента списка в оболочке
 	function shellActiveItem(currentValue, selectId) {
 		const currentSelect = document.getElementById(selectId);
-		const shellListItems = currentSelect.querySelectorAll('.select__item');
+		const shellList = currentSelect.querySelectorAll('.select__item');
 
-		for (let i = 0; i < shellListItems.length; i++) {
-			shellListItems[i].classList.remove('_active');
-			let listItemData = shellListItems[i].getAttribute('data-value');
+		for (let i = 0; i < shellList.length; i++) {
+			shellList[i].classList.remove('_active');
+			let listItemData = shellList[i].getAttribute('data-value');
 			if (currentValue == listItemData) {
-				shellListItems[i].classList.add('_active');
+				shellList[i].classList.add('_active');
 			}
 		}
 	}
@@ -100,7 +151,7 @@ if (selectCustom.length > 0) {
 		if (e.target.closest('.select__item')) {
 			const parent = e.target.closest('.selectCustom');
 			const selectId = parent.getAttribute('id');
-			const shellListItems = parent.querySelectorAll('.select__item');
+			const shellList = parent.querySelectorAll('.select__item');
 			const trigger = parent.querySelector('.selectShell__trigger');
 			const currentItem = e.target.closest('.select__item');
 			const dataItem = currentItem.getAttribute('data-value');
@@ -108,8 +159,8 @@ if (selectCustom.length > 0) {
 			shellTrigger(dataItem, selectId);
 
 			if (!currentItem.classList.contains('_active')) {
-				for (let i = 0; i < shellListItems.length; i++) {
-					shellListItems[i].classList.remove('_active');
+				for (let i = 0; i < shellList.length; i++) {
+					shellList[i].classList.remove('_active');
 				}
 				currentItem.classList.add('_active');
 				trigger.classList.remove('_active');
