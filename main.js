@@ -1,5 +1,55 @@
 const selectCustom = document.querySelectorAll('.selectCustom');
 
+let attr = selectCustom[0].attributes;
+// console.log(attr);
+
+let arr = {
+	selectLangFirst: {
+		selected: 'cn',
+		shellList: {
+			class: "select__list",
+			id: 'list1',
+			"data-value": "1"
+		},
+		text: {
+			tag: 'span',
+			class: '1',
+			id: '2',
+			migration: true
+		},
+		image: {
+			class: '',
+			id: '',
+			migration: true
+		},
+		icon: {
+			class: "icon-ok",
+			migration: false
+		},
+	},
+	selectLangSecond: {
+		selected: 'en',
+		shellList: {
+			class: "select__list"
+		},
+		text: {
+			tag: 'span',
+			class: '',
+			id: '',
+			migration: true
+		},
+		image: {
+			class: '',
+			id: '',
+			migration: true
+		},
+		icon: {
+			class: "icon-ok",
+			migration: false
+		},
+	}
+};
+
 if (selectCustom.length > 0) {
 
 	createShellSelect();
@@ -19,14 +69,39 @@ if (selectCustom.length > 0) {
 
 	}
 
+	//Создание открывающего тега и наполнение его атрибутами
+	function createTag(selectPattern, shellList, tagName) {
+		let tag = '';
+
+		tag += `<${tagName}`;
+
+		if (selectPattern[shellList]) {
+			for (let key in selectPattern[shellList]) {
+				tag += ` ${key}="${selectPattern.shellList[key]}"`;
+			}
+		}
+
+		tag += `>`;
+
+		return tag;
+	}
+
 	//Создание листа оболочки
 	function createShellList(currentSelect) {
 		let shellList = '';
-		// const currentSelect = selectCustom[index];
 		const options = currentSelect.querySelectorAll('option');
-		shellList += `<ul class="select__list">`;
+		const selectId = currentSelect.getAttribute('id');
+		const selectPattern = arr[selectId];
+		const ul = "ul";
+		const value = 'shellList';
+
+		shellList += createTag(selectPattern, value, ul);
 		for (let index = 0; index < options.length; index++) {
-			let optionValue = options[index].value;
+			const currentOption = options[index];
+			const optionValue = currentOption.value;
+			const optionImg = currentOption.getAttribute('data-img');
+			const optionIcon = currentOption.getAttribute('data-icon');
+
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
 			shellList += `<span class="select__text">${optionValue}</span>`;
 			shellList += `<img class="select__image" src="img/${optionValue}.png" alt="flag">`;
@@ -34,7 +109,6 @@ if (selectCustom.length > 0) {
 			shellList += `</li>`;
 		}
 		shellList += `</ul>`;
-
 
 		return shellList;
 	};
