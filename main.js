@@ -8,25 +8,26 @@ let arr = {
 		selected: 'cn',
 		shellList: {
 			class: "select__list",
-			id: 'list1',
 			"data-value": "1"
+		},
+		shellItem: {
+			class: "select__item"
 		},
 		text: {
 			tag: 'span',
-			class: '1',
-			id: '2',
+			class: 'select__text',
 			migration: true
 		},
 		image: {
-			class: '',
-			id: '',
+			class: 'select__image',
 			migration: true
 		},
 		icon: {
 			class: "icon-ok",
 			migration: false
-		},
+		}
 	},
+
 	selectLangSecond: {
 		selected: 'en',
 		shellList: {
@@ -34,19 +35,17 @@ let arr = {
 		},
 		text: {
 			tag: 'span',
-			class: '',
-			id: '',
+			class: 'select__text',
 			migration: true
 		},
 		image: {
-			class: '',
-			id: '',
+			class: 'select__image',
 			migration: true
 		},
 		icon: {
 			class: "icon-ok",
 			migration: false
-		},
+		}
 	}
 };
 
@@ -89,6 +88,7 @@ if (selectCustom.length > 0) {
 	//Создание листа оболочки
 	function createShellList(currentSelect) {
 		let shellList = '';
+
 		const options = currentSelect.querySelectorAll('option');
 		const selectId = currentSelect.getAttribute('id');
 		const selectPattern = arr[selectId];
@@ -96,22 +96,61 @@ if (selectCustom.length > 0) {
 		const value = 'shellList';
 
 		shellList += createTag(selectPattern, value, ul);
+
 		for (let index = 0; index < options.length; index++) {
 			const currentOption = options[index];
+			const optionText = currentOption.textContent;
 			const optionValue = currentOption.value;
 			const optionImg = currentOption.getAttribute('data-img');
 			const optionIcon = currentOption.getAttribute('data-icon');
 
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
-			shellList += `<span class="select__text">${optionValue}</span>`;
-			shellList += `<img class="select__image" src="img/${optionValue}.png" alt="flag">`;
-			shellList += `<i class="icon-ok"></i>`;
+
+			for (let key in selectPattern) {
+				if (key === "text") {
+					const keyValue = selectPattern[key].tag;
+
+					shellList += `<${keyValue}`;
+
+					if (selectPattern[key].class) {
+						shellList += ` class="${selectPattern[key].class}"`;
+					}
+
+					shellList += `>`;
+					shellList += `${optionText}`;
+					shellList += `</${keyValue}>`;
+				}
+
+				if (key === "image") {
+					shellList += `<img`;
+
+					if (selectPattern[key].class) {
+						shellList += ` class="${selectPattern[key].class}"`;
+					}
+
+					shellList += ` src="${optionImg}"`;
+					shellList += ` alt="shellItemImg">`;
+				}
+
+				if (key === "icon") {
+					shellList += `<i`;
+
+					if (selectPattern[key].class) {
+						shellList += ` class="${selectPattern[key].class}"`;
+					}
+
+					shellList += `>`;
+					shellList += `</i>`;
+				}
+			}
+
 			shellList += `</li>`;
 		}
+
 		shellList += `</ul>`;
 
 		return shellList;
-	};
+	}
 
 	//Создание триггера оболочки
 	function createShellTrigger() {
@@ -124,7 +163,7 @@ if (selectCustom.length > 0) {
 		shellTrigger += `</div>`;
 
 		return shellTrigger;
-	};
+	}
 
 	shellTrigger();
 
