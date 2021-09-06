@@ -231,11 +231,12 @@ h1, h2, h3, h4, h5, h6 {
 	transform: rotate(180deg);
 }
 
-.trigger__icon{
+.selectShell__trigger i{
 	position: absolute;
 	top: 15px;
 	right: 10px;
 }
+
 .selectCustom > select{
 	width: 116px;
   	height: 50px;

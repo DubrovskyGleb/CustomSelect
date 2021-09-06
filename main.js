@@ -25,8 +25,8 @@ let arr = {
 			class: "icon-ok",
 			migration: false
 		},
-		shellTrigger: {
-
+		triggerChevron: {
+			class: "icon-down-open"
 		}
 	},
 
@@ -61,7 +61,7 @@ if (selectCustom.length > 0) {
 			let base = '';
 
 			base += `<div class="selectShell">`;
-			base += createShellTrigger();
+			base += createShellTrigger(selectCustom[index]);
 			base += createShellList(selectCustom[index]);
 			base += `</div>`;
 
@@ -159,12 +159,55 @@ if (selectCustom.length > 0) {
 	}
 
 	//Создание триггера оболочки
-	function createShellTrigger() {
+	function createShellTrigger(currentSelect) {
 		let shellTrigger = '';
+		const selectId = currentSelect.getAttribute('id');
+		const selectPattern = arr[selectId];
 
 		shellTrigger += `<div class="selectShell__trigger">`;
-		shellTrigger += `<span class="select__text trigger__text"></span>`;
-		shellTrigger += `<img class="select__image trigger__image" alt="flag">`;
+
+		for (let key in selectPattern) {
+			const patternValue = selectPattern[key];
+
+			if (key === "text" && patternValue.migration === true) {
+				console.log("yes");
+				const keyValue = patternValue.tag;
+
+				shellTrigger += `<${keyValue}`;
+
+				if (patternValue.class) {
+					shellTrigger += ` class="${patternValue.class} trigger__text"`;
+				} else {
+					shellTrigger += ` class="trigger__text"`;
+				}
+
+				shellTrigger += `>`;
+				shellTrigger += `</${keyValue}>`;
+			}
+
+			if (key === "image" && patternValue.migration === true) {
+				shellTrigger += `<img`;
+
+				if (patternValue.class) {
+					shellTrigger += ` class="${patternValue.class} trigger__image"`;
+				} else {
+					shellTrigger += ` class="trigger__image"`;
+				}
+
+				shellTrigger += ` alt="shellItemImg">`;
+			}
+
+			if (key === "icon" && patternValue.migration === true) {
+				shellTrigger += `<i`;
+
+				if (patternValue.class) {
+					shellTrigger += ` class="${patternValue.class}"`;
+				}
+
+				shellTrigger += `>`;
+				shellTrigger += `</i>`;
+			}
+		}
 		shellTrigger += `<i class="trigger__icon icon-down-open"></i>`;
 		shellTrigger += `</div>`;
 
