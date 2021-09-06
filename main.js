@@ -1,7 +1,6 @@
 const selectCustom = document.querySelectorAll('.selectCustom');
 
 let attr = selectCustom[0].attributes;
-// console.log(attr);
 
 let arr = {
 	selectLangFirst: {
@@ -25,11 +24,14 @@ let arr = {
 		icon: {
 			class: "icon-ok",
 			migration: false
+		},
+		shellTrigger: {
+
 		}
 	},
 
 	selectLangSecond: {
-		selected: 'en',
+		selected: 'ru',
 		shellList: {
 			class: "select__list"
 		},
@@ -88,7 +90,6 @@ if (selectCustom.length > 0) {
 	//Создание листа оболочки
 	function createShellList(currentSelect) {
 		let shellList = '';
-
 		const options = currentSelect.querySelectorAll('option');
 		const selectId = currentSelect.getAttribute('id');
 		const selectPattern = arr[selectId];
@@ -107,13 +108,14 @@ if (selectCustom.length > 0) {
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
 
 			for (let key in selectPattern) {
+				const patternValue = selectPattern[key];
 				if (key === "text") {
-					const keyValue = selectPattern[key].tag;
+					const keyValue = patternValue.tag;
 
 					shellList += `<${keyValue}`;
 
-					if (selectPattern[key].class) {
-						shellList += ` class="${selectPattern[key].class}"`;
+					if (patternValue.class) {
+						shellList += ` class="${patternValue.class}"`;
 					}
 
 					shellList += `>`;
@@ -124,8 +126,8 @@ if (selectCustom.length > 0) {
 				if (key === "image") {
 					shellList += `<img`;
 
-					if (selectPattern[key].class) {
-						shellList += ` class="${selectPattern[key].class}"`;
+					if (patternValue.class) {
+						shellList += ` class="${patternValue.class}"`;
 					}
 
 					shellList += ` src="${optionImg}"`;
@@ -135,8 +137,12 @@ if (selectCustom.length > 0) {
 				if (key === "icon") {
 					shellList += `<i`;
 
-					if (selectPattern[key].class) {
-						shellList += ` class="${selectPattern[key].class}"`;
+					if (patternValue.class) {
+						shellList += ` class="${patternValue.class}"`;
+					} else {
+						if (currentOption.hasAttribute('data-icon')) {
+							shellList += ` class="${currentOption.getAttribute('data-icon')}"`;
+						}
 					}
 
 					shellList += `>`;
@@ -179,7 +185,9 @@ if (selectCustom.length > 0) {
 			for (let index = 0; index < selectCustom.length; index++) {
 				const currentSelect = selectCustom[index];
 				const selectId = currentSelect.getAttribute('id');
-				const selected = currentSelect.getAttribute('data-selected');
+				const selectPattern = arr[selectId];
+				const selected = selectPattern.selected;
+				// const selected = currentSelect.getAttribute('data-selected');
 
 				intoShellTrigger(currentSelect, selected);
 				sendNativeValue(currentSelect, selected);
@@ -198,11 +206,14 @@ if (selectCustom.length > 0) {
 
 	//Вставка контента в триггер оболочки
 	function intoShellTrigger(currentSelect, selected) {
+		const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
+		const optionSrc = currentOption.getAttribute('data-img');
+		const optionText = currentOption.textContent;
 		const triggerImage = currentSelect.querySelector('.trigger__image');
 		const triggerText = currentSelect.querySelector('.trigger__text');
 
-		triggerImage.src = `img/${selected}.png`;
-		triggerText.innerHTML = selected;
+		triggerImage.src = optionSrc;
+		triggerText.innerHTML = optionText;
 	}
 
 	//Определение активного элемента списка в оболочке
