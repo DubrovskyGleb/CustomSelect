@@ -22,11 +22,8 @@ let arr = {
 			migration: true
 		},
 		icon: {
-			class: "icon-ok",
-			migration: false
-		},
-		triggerChevron: {
-			class: "icon-down-open"
+			// class: "icon-ok",
+			migration: true
 		}
 	},
 
@@ -47,6 +44,9 @@ let arr = {
 		icon: {
 			class: "icon-ok",
 			migration: false
+		},
+		triggerChevron: {
+			class: "icon-down-open"
 		}
 	}
 };
@@ -170,7 +170,6 @@ if (selectCustom.length > 0) {
 			const patternValue = selectPattern[key];
 
 			if (key === "text" && patternValue.migration === true) {
-				console.log("yes");
 				const keyValue = patternValue.tag;
 
 				shellTrigger += `<${keyValue}`;
@@ -202,13 +201,24 @@ if (selectCustom.length > 0) {
 
 				if (patternValue.class) {
 					shellTrigger += ` class="${patternValue.class}"`;
+				} else {
+					const selected = selectPattern.selected;
+					const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
+					shellTrigger += ` class="${currentOption.getAttribute('data-icon')}"`;
 				}
 
 				shellTrigger += `>`;
 				shellTrigger += `</i>`;
 			}
+
+			if (key === "triggerChevron") {
+				shellTrigger += `<i`;
+				shellTrigger += ` class="${patternValue.class}"`;
+				shellTrigger += `>`;
+				shellTrigger += `</i>`;
+			}
 		}
-		shellTrigger += `<i class="trigger__icon icon-down-open"></i>`;
+
 		shellTrigger += `</div>`;
 
 		return shellTrigger;
@@ -230,7 +240,6 @@ if (selectCustom.length > 0) {
 				const selectId = currentSelect.getAttribute('id');
 				const selectPattern = arr[selectId];
 				const selected = selectPattern.selected;
-				// const selected = currentSelect.getAttribute('data-selected');
 
 				intoShellTrigger(currentSelect, selected);
 				sendNativeValue(currentSelect, selected);
