@@ -1,6 +1,6 @@
 const selectCustom = document.querySelectorAll('.selectCustom');
 
-let attr = selectCustom[0].attributes;
+//let attr = selectCustom[0].attributes;
 
 let arr = {
 	selectLangFirst: {
@@ -18,7 +18,7 @@ let arr = {
 			migration: true
 		},
 		image: {
-			class: 'select__image',
+			//class: 'select__image',
 			migration: true
 		},
 		icon: {
@@ -38,7 +38,7 @@ let arr = {
 			migration: true
 		},
 		image: {
-			class: 'select__image',
+			//class: 'select__image',
 			migration: true
 		},
 		icon: {
@@ -103,10 +103,10 @@ if (selectCustom.length > 0) {
 			const optionText = currentOption.textContent;
 			const optionValue = currentOption.value;
 			const optionImg = currentOption.getAttribute('data-img');
-			const optionIcon = currentOption.getAttribute('data-icon');
+			//const optionIcon = currentOption.getAttribute('data-icon');
 
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
-
+			//createStructure();
 			for (let key in selectPattern) {
 				const patternValue = selectPattern[key];
 				if (key === "text") {
@@ -158,6 +158,10 @@ if (selectCustom.length > 0) {
 		return shellList;
 	}
 
+	// function createStructure() {
+
+	// }
+
 	//Создание триггера оболочки
 	function createShellTrigger(currentSelect) {
 		let shellTrigger = '';
@@ -168,48 +172,47 @@ if (selectCustom.length > 0) {
 
 		for (let key in selectPattern) {
 			const patternValue = selectPattern[key];
+			if (patternValue.migration === true) {
 
-			if (key === "text" && patternValue.migration === true) {
-				const keyValue = patternValue.tag;
+				if (key === "text") {
+					const keyValue = patternValue.tag;
 
-				shellTrigger += `<${keyValue}`;
+					shellTrigger += `<${keyValue}`;
 
-				if (patternValue.class) {
-					shellTrigger += ` class="${patternValue.class} trigger__text"`;
-				} else {
-					shellTrigger += ` class="trigger__text"`;
+					if (patternValue.class) {
+						shellTrigger += ` class="${patternValue.class}"`;
+					}
+
+					shellTrigger += `>`;
+					shellTrigger += `</${keyValue}>`;
 				}
 
-				shellTrigger += `>`;
-				shellTrigger += `</${keyValue}>`;
-			}
+				if (key === "image") {
+					shellTrigger += `<img`;
 
-			if (key === "image" && patternValue.migration === true) {
-				shellTrigger += `<img`;
+					if (patternValue.class) {
+						shellTrigger += ` class="${patternValue.class}"`;
+					}
 
-				if (patternValue.class) {
-					shellTrigger += ` class="${patternValue.class} trigger__image"`;
-				} else {
-					shellTrigger += ` class="trigger__image"`;
+					shellTrigger += ` alt="shellItemImg">`;
 				}
 
-				shellTrigger += ` alt="shellItemImg">`;
-			}
+				if (key === "icon") {
+					shellTrigger += `<i`;
 
-			if (key === "icon" && patternValue.migration === true) {
-				shellTrigger += `<i`;
+					if (patternValue.class) {
+						shellTrigger += ` class="${patternValue.class}"`;
+					} else {
+						const selected = selectPattern.selected;
+						const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
+						shellTrigger += ` class="${currentOption.getAttribute('data-icon')}"`;
+					}
 
-				if (patternValue.class) {
-					shellTrigger += ` class="${patternValue.class}"`;
-				} else {
-					const selected = selectPattern.selected;
-					const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
-					shellTrigger += ` class="${currentOption.getAttribute('data-icon')}"`;
+					shellTrigger += `>`;
+					shellTrigger += `</i>`;
 				}
-
-				shellTrigger += `>`;
-				shellTrigger += `</i>`;
 			}
+
 
 			if (key === "triggerChevron") {
 				shellTrigger += `<i`;
@@ -260,9 +263,13 @@ if (selectCustom.length > 0) {
 	function intoShellTrigger(currentSelect, selected) {
 		const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
 		const optionSrc = currentOption.getAttribute('data-img');
+		const selectId = currentSelect.getAttribute('id');
+		const selectPattern = arr[selectId];
+		const textTag = selectPattern.text.tag;
 		const optionText = currentOption.textContent;
-		const triggerImage = currentSelect.querySelector('.trigger__image');
-		const triggerText = currentSelect.querySelector('.trigger__text');
+		const currentTrigger = currentSelect.querySelector('.selectShell__trigger');
+		const triggerImage = currentTrigger.querySelector('img');
+		const triggerText = currentSelect.querySelector(textTag);
 
 		triggerImage.src = optionSrc;
 		triggerText.innerHTML = optionText;

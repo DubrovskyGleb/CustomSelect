@@ -1,5 +1,10 @@
 # Кастомный селект
 ---
+### CustomSelect V1.3.6
+
+Создана функция createStructure
+***
+
 ### CustomSelect V1.3.5
 
 Полная привязка к значению "migration" объекта настройки
