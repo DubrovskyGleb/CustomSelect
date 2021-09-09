@@ -1,5 +1,13 @@
 # Кастомный селект
 ---
+### CustomSelect V1.3.7
+
+* Прописана логика функции **createElem()**
+* Удалена функция **createStructure()**
+* Облегчена функция **createShellList()**
+* Облегчена функция **createShellTrigger()**
+***
+
 ### CustomSelect V1.3.6
 
 Создана функция createStructure

@@ -103,51 +103,13 @@ if (selectCustom.length > 0) {
 			const optionText = currentOption.textContent;
 			const optionValue = currentOption.value;
 			const optionImg = currentOption.getAttribute('data-img');
-			//const optionIcon = currentOption.getAttribute('data-icon');
 
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
-			//createStructure();
+
 			for (let key in selectPattern) {
 				const patternValue = selectPattern[key];
-				if (key === "text") {
-					const keyValue = patternValue.tag;
 
-					shellList += `<${keyValue}`;
-
-					if (patternValue.class) {
-						shellList += ` class="${patternValue.class}"`;
-					}
-
-					shellList += `>`;
-					shellList += `${optionText}`;
-					shellList += `</${keyValue}>`;
-				}
-
-				if (key === "image") {
-					shellList += `<img`;
-
-					if (patternValue.class) {
-						shellList += ` class="${patternValue.class}"`;
-					}
-
-					shellList += ` src="${optionImg}"`;
-					shellList += ` alt="shellItemImg">`;
-				}
-
-				if (key === "icon") {
-					shellList += `<i`;
-
-					if (patternValue.class) {
-						shellList += ` class="${patternValue.class}"`;
-					} else {
-						if (currentOption.hasAttribute('data-icon')) {
-							shellList += ` class="${currentOption.getAttribute('data-icon')}"`;
-						}
-					}
-
-					shellList += `>`;
-					shellList += `</i>`;
-				}
+				shellList += createElem(key, patternValue, currentOption);
 			}
 
 			shellList += `</li>`;
@@ -157,10 +119,6 @@ if (selectCustom.length > 0) {
 
 		return shellList;
 	}
-
-	// function createStructure() {
-
-	// }
 
 	//Создание триггера оболочки
 	function createShellTrigger(currentSelect) {
@@ -172,59 +130,70 @@ if (selectCustom.length > 0) {
 
 		for (let key in selectPattern) {
 			const patternValue = selectPattern[key];
+
 			if (patternValue.migration === true) {
-
-				if (key === "text") {
-					const keyValue = patternValue.tag;
-
-					shellTrigger += `<${keyValue}`;
-
-					if (patternValue.class) {
-						shellTrigger += ` class="${patternValue.class}"`;
-					}
-
-					shellTrigger += `>`;
-					shellTrigger += `</${keyValue}>`;
-				}
-
-				if (key === "image") {
-					shellTrigger += `<img`;
-
-					if (patternValue.class) {
-						shellTrigger += ` class="${patternValue.class}"`;
-					}
-
-					shellTrigger += ` alt="shellItemImg">`;
-				}
-
-				if (key === "icon") {
-					shellTrigger += `<i`;
-
-					if (patternValue.class) {
-						shellTrigger += ` class="${patternValue.class}"`;
-					} else {
-						const selected = selectPattern.selected;
-						const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
-						shellTrigger += ` class="${currentOption.getAttribute('data-icon')}"`;
-					}
-
-					shellTrigger += `>`;
-					shellTrigger += `</i>`;
-				}
+				shellTrigger += createElem(key, patternValue);
 			}
 
-
 			if (key === "triggerChevron") {
-				shellTrigger += `<i`;
-				shellTrigger += ` class="${patternValue.class}"`;
-				shellTrigger += `>`;
-				shellTrigger += `</i>`;
+				shellTrigger += createElem(key, patternValue);
 			}
 		}
 
 		shellTrigger += `</div>`;
 
 		return shellTrigger;
+	}
+	//Создает структуру HTML элементов списка и триггера оболочки
+	function createElem(key, patternValue, currentOption) {
+		let resultString = '';
+		let elemTag = patternValue.tag;
+		let optionText = '';
+		let optionImg = '';
+		let elemClass = '';
+
+		if (patternValue.class) {
+			elemClass = ` class="${patternValue.class}"`;
+		}
+
+		if (currentOption) {
+			if (key === 'text') {
+				optionText = currentOption.textContent;
+			}
+			if (key === 'image') {
+				optionImg = ` src="${currentOption.getAttribute('data-img')}"`;
+			}
+			if (key === 'icon' && currentOption.hasAttribute('data-icon')) {
+				elemClass = ` class="${currentOption.getAttribute('data-icon')}"`;
+			}
+		}
+
+		if (key === 'triggerChevron' && !currentOption) {
+			elemTag = 'i';
+		}
+
+		if (key === 'icon') {
+			elemTag = 'i';
+		}
+
+		if (key === 'image') {
+			elemTag = 'img';
+		}
+
+		if (elemTag) {
+
+			resultString += `<${elemTag}`;
+			resultString += `${elemClass}`;
+			resultString += `${optionImg}`;
+			resultString += `>`;
+			resultString += `${optionText}`;
+
+			if (elemTag !== 'img') {
+				resultString += `</${elemTag}>`;
+			}
+		}
+
+		return resultString;
 	}
 
 	shellTrigger();
