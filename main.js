@@ -1,7 +1,5 @@
 const selectCustom = document.querySelectorAll('.selectCustom');
 
-//let attr = selectCustom[0].attributes;
-
 let arr = {
 	selectLangFirst: {
 		selected: 'cn',
@@ -22,7 +20,7 @@ let arr = {
 			migration: true
 		},
 		icon: {
-			// class: "icon-ok",
+			//class: "icon-ok",
 			migration: true
 		}
 	},
@@ -100,9 +98,7 @@ if (selectCustom.length > 0) {
 
 		for (let index = 0; index < options.length; index++) {
 			const currentOption = options[index];
-			const optionText = currentOption.textContent;
 			const optionValue = currentOption.value;
-			const optionImg = currentOption.getAttribute('data-img');
 
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
 
@@ -144,6 +140,7 @@ if (selectCustom.length > 0) {
 
 		return shellTrigger;
 	}
+
 	//Создает структуру HTML элементов списка и триггера оболочки
 	function createElem(key, patternValue, currentOption) {
 		let resultString = '';
@@ -181,7 +178,6 @@ if (selectCustom.length > 0) {
 		}
 
 		if (elemTag) {
-
 			resultString += `<${elemTag}`;
 			resultString += `${elemClass}`;
 			resultString += `${optionImg}`;
@@ -239,6 +235,14 @@ if (selectCustom.length > 0) {
 		const currentTrigger = currentSelect.querySelector('.selectShell__trigger');
 		const triggerImage = currentTrigger.querySelector('img');
 		const triggerText = currentSelect.querySelector(textTag);
+
+		if (currentOption.hasAttribute('data-icon') && (!selectPattern.icon.class) && selectPattern.icon.migration === true) {
+			let triggerIcon = currentTrigger.querySelector('i');
+			let iconClass = currentOption.getAttribute('data-icon');
+
+			triggerIcon.removeAttribute('class');
+			triggerIcon.classList.add(iconClass);
+		}
 
 		triggerImage.src = optionSrc;
 		triggerText.innerHTML = optionText;
@@ -325,18 +329,37 @@ if (selectCustom.length > 0) {
 
 	//Использование мыши
 	function mouseNavigationSelect(e) {
+
 		if (e.target.closest('.selectCustom')) {
 			const currentSelect = e.target.closest('.selectCustom');
 			const trigger = currentSelect.querySelector('.selectShell__trigger');
+			const allSelect = document.querySelectorAll('.selectCustom');
+			const currentId = currentSelect.getAttribute('id');
 
-			//открытие и закрытие меню нажатием на trigger
+			for (let index = 0; index < allSelect.length; index++) {
+				const selectId = allSelect[index].getAttribute('id');
+				const selectTrigger = allSelect[index].querySelector('.selectShell__trigger');
+				if (selectId !== currentId) {
+					selectTrigger.classList.remove('_active');
+				}
+			}
+
 			if (e.target.closest('.selectShell__trigger')) {
 				trigger.classList.toggle('_active');
 			}
-			//закрытие меню при нажатии вне его
-			if (!e.target.closest('.selectShell') && trigger.classList.contains('_active')) {
-				trigger.classList.remove('_active');
+
+			if (e.target.closest('.selectShell__trigger._active')) {
+
 			}
+
+			document.addEventListener('click', (e) => {
+				if (!e.target.closest('.selectCustom')) {
+					for (let index = 0; index < allSelect.length; index++) {
+						const selectTrigger = allSelect[index].querySelector('.selectShell__trigger');
+						selectTrigger.classList.remove('_active');
+					}
+				}
+			}, { once: true });
 
 			changeCustomItem(e);
 		}

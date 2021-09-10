@@ -1,5 +1,10 @@
 # Кастомный селект
 ---
+### CustomSelect V1.3.8
+
+Исправлена функция `mouseNavigationSelect()`
+***
+
 ### CustomSelect V1.3.7
 
 * Прописана логика функции **createElem()**
