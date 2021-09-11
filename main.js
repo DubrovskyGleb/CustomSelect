@@ -46,10 +46,61 @@ let arr = {
 		triggerChevron: {
 			class: "icon-down-open"
 		}
+	},
+
+	selectLangThird: {
+		selected: '',
+		shellList: {
+			class: "select__list"
+		},
+		text: {
+			tag: 'span',
+			class: 'select__text',
+			migration: true
+		},
+		image: {
+			//class: 'select__image',
+			migration: true
+		},
+		icon: {
+			class: "icon-ok",
+			migration: false
+		},
+		triggerChevron: {
+			class: "icon-down-open"
+		}
 	}
 };
 
 if (selectCustom.length > 0) {
+	createEmptyOption();
+
+	function createEmptyOption() {
+		for (let key in arr) {
+			if (!arr[key].selected) {
+				const emptySelect = document.getElementById(key);
+				const emptySelectOptions = emptySelect.querySelectorAll('option');
+				let emptyOption = false;
+
+				for (let index = 0; index < emptySelectOptions.length; index++) {
+					if (!emptySelectOptions[index].hasAttributes()) {
+						emptyOption = true;
+					}
+				}
+
+				if (!emptyOption) {
+					let selectDefault = emptySelect.querySelector('select');
+					let option = document.createElement('option');
+					selectDefault.prepend(option);
+					option.setAttribute('data-img', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgqAcAAIIAgLO2btEAAAAASUVORK5CYII=');
+					option.setAttribute('value', '');
+					console.log(option);
+				}
+			}
+		}
+
+
+	}
 
 	createShellSelect();
 
@@ -226,15 +277,33 @@ if (selectCustom.length > 0) {
 
 	//Вставка контента в триггер оболочки
 	function intoShellTrigger(currentSelect, selected) {
-		const currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
-		const optionSrc = currentOption.getAttribute('data-img');
 		const selectId = currentSelect.getAttribute('id');
 		const selectPattern = arr[selectId];
 		const textTag = selectPattern.text.tag;
-		const optionText = currentOption.textContent;
 		const currentTrigger = currentSelect.querySelector('.selectShell__trigger');
 		const triggerImage = currentTrigger.querySelector('img');
 		const triggerText = currentSelect.querySelector(textTag);
+
+		let currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
+		let optionSrc = currentOption.getAttribute('data-img');
+		let optionText = '';
+
+		// if (selected) {
+		// 	currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
+		// } else {
+		// 	const options = currentSelect.querySelectorAll('option');
+		// 	currentOption = options[0];
+		// }
+
+		// if (currentOption.hasAttribute("data-img")) {
+		// 	optionSrc = currentOption.getAttribute('data-img');
+		// } else {
+		// 	optionSrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgqAcAAIIAgLO2btEAAAAASUVORK5CYII=';
+		// }
+
+		if (currentOption.textContent) {
+			optionText = currentOption.textContent;
+		}
 
 		if (currentOption.hasAttribute('data-icon') && (!selectPattern.icon.class) && selectPattern.icon.migration === true) {
 			let triggerIcon = currentTrigger.querySelector('i');

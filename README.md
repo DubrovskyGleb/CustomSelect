@@ -1,36 +1,41 @@
 # Кастомный селект
 ---
+### CustomSelect V1.3.9
+
+Создана функция **`createEmptyOption()`**
+***
+
 ### CustomSelect V1.3.8
 
-Исправлена функция `mouseNavigationSelect()`
+Исправлена функция **`mouseNavigationSelect()`**
 ***
 
 ### CustomSelect V1.3.7
 
-* Прописана логика функции **createElem()**
-* Удалена функция **createStructure()**
-* Облегчена функция **createShellList()**
-* Облегчена функция **createShellTrigger()**
+* Прописана логика функции **`createElem()`**
+* Удалена функция **`createStructure()`**
+* Облегчена функция **`createShellList()`**
+* Облегчена функция **`createShellTrigger()`**
 ***
 
 ### CustomSelect V1.3.6
 
-Создана функция createStructure
+Создана функция **`createStructure()`**
 ***
 
 ### CustomSelect V1.3.5
 
-Полная привязка к значению "migration" объекта настройки
+Полная привязка к значению `migration` объекта настройки
 ***
 
 ### CustomSelect V1.3.4
 
-Частичная привязка к значению "migration" объекта настройки
+Частичная привязка к значению `migration` объекта настройки
 ***
 
 ### CustomSelect V1.3.3
 
-Реализована возможность выбора класса как из объекта настройки, так и проставкой атрибута "data-icon" для каждого option
+Реализована возможность выбора класса как из объекта настройки, так и проставкой атрибута `data-icon` для каждого option
 ***
 
 ### CustomSelect V1.3.2
@@ -52,7 +57,7 @@
 ### CustomSelect V1.2.2
 
 * Минимизировано количество классов
-* Доработана функция shellTrigger
+* Доработана функция **`shellTrigger`**
 ***
 
 ### CustomSelect V1.2.1
