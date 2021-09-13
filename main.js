@@ -1,6 +1,6 @@
 const selectCustom = document.querySelectorAll('.selectCustom');
 
-let arr = {
+let customSelectConfig = {
 	selectLangFirst: {
 		selected: 'cn',
 		shellList: {
@@ -8,7 +8,7 @@ let arr = {
 			"data-value": "1"
 		},
 		shellItem: {
-			class: "select__item"
+			// class: "select__item"
 		},
 		text: {
 			tag: 'span',
@@ -16,19 +16,26 @@ let arr = {
 			migration: true
 		},
 		image: {
-			//class: 'select__image',
+			class: 'select__image',
 			migration: true
 		},
 		icon: {
-			//class: "icon-ok",
-			migration: true
+			class: "icon-ok",
+			migration: false
+		},
+		triggerChevron: {
+			class: "icon-down-open"
 		}
 	},
 
 	selectLangSecond: {
-		selected: 'ru',
+		selected: '',
+		emptyOption: {
+			text: 'Выберите',
+			show: true
+		},
 		shellList: {
-			class: "select__list"
+			// class: "select__list"
 		},
 		text: {
 			tag: 'span',
@@ -36,7 +43,7 @@ let arr = {
 			migration: true
 		},
 		image: {
-			//class: 'select__image',
+			class: 'select__image',
 			migration: true
 		},
 		icon: {
@@ -50,6 +57,10 @@ let arr = {
 
 	selectLangThird: {
 		selected: '',
+		emptyOption: {
+			text: 'Выберите',
+			show: false
+		},
 		shellList: {
 			class: "select__list"
 		},
@@ -59,7 +70,7 @@ let arr = {
 			migration: true
 		},
 		image: {
-			//class: 'select__image',
+			class: 'select__image',
 			migration: true
 		},
 		icon: {
@@ -73,11 +84,77 @@ let arr = {
 };
 
 if (selectCustom.length > 0) {
+
+	document.addEventListener('click', mouseNavigationSelect);
+
 	createEmptyOption();
 
+	createShellSelect();
+
+	shellTrigger();
+
+	focusBlur();
+
+	assignStyles();
+
+	//Базовые CSS свойства
+	function assignStyles() {
+		const style = document.createElement('style');
+		const head = document.getElementsByTagName('head')[0];
+		for (let index = 0; index < selectCustom.length; index++) {
+			const trigger = selectCustom[index].querySelector('.selectShell__trigger');
+			const resultWidth = trigger.offsetWidth / 2;
+			const resultHeight = trigger.offsetHeight / 2;
+			const resultRadius = getComputedStyle(trigger).borderRadius;
+			const selectDefault = selectCustom[index].querySelector('select');
+
+			console.log(trigger.offsetWidth);
+			console.log(trigger.offsetHeight);
+
+			selectDefault.style.width = resultWidth;
+			selectDefault.style.height = resultHeight;
+			selectDefault.style.borderRadius = resultRadius;
+		}
+
+		style.appendChild(document.createTextNode(`
+			.selectCustom{
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.selectCustom > select{
+				position: absolute;
+				
+			}
+			.selectShell{
+				position: relative;
+			}
+			.selectShell > ul{
+				position: absolute;
+				width: 100%;
+				top: 100%;
+				left: 0;
+				display: none;
+			}
+			.selectShell > ul > li{
+				cursor: pointer;
+			}
+			.selectShell__trigger{
+				cursor: pointer;
+			}
+			.selectShell__trigger._active ~ ul{
+				display: block;
+			}
+		`));
+
+		head.appendChild(style);
+	}
+
+	//Создание пустого option при пустом selected
 	function createEmptyOption() {
-		for (let key in arr) {
-			if (!arr[key].selected) {
+		for (let key in customSelectConfig) {
+			if (!customSelectConfig[key].selected) {
 				const emptySelect = document.getElementById(key);
 				const emptySelectOptions = emptySelect.querySelectorAll('option');
 				let emptyOption = false;
@@ -91,18 +168,18 @@ if (selectCustom.length > 0) {
 				if (!emptyOption) {
 					let selectDefault = emptySelect.querySelector('select');
 					let option = document.createElement('option');
+					const selectId = selectDefault.parentNode.getAttribute('id');
 					selectDefault.prepend(option);
-					option.setAttribute('data-img', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgqAcAAIIAgLO2btEAAAAASUVORK5CYII=');
+					option.setAttribute('data-img', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/CfCQAGBgICjIkPvgAAAABJRU5ErkJggg==');
 					option.setAttribute('value', '');
-					console.log(option);
+
+					if (customSelectConfig[selectId].emptyOption && customSelectConfig[selectId].emptyOption.text) {
+						option.innerHTML = customSelectConfig[selectId].emptyOption.text;
+					}
 				}
 			}
 		}
-
-
 	}
-
-	createShellSelect();
 
 	//Создание оболочки
 	function createShellSelect() {
@@ -141,7 +218,7 @@ if (selectCustom.length > 0) {
 		let shellList = '';
 		const options = currentSelect.querySelectorAll('option');
 		const selectId = currentSelect.getAttribute('id');
-		const selectPattern = arr[selectId];
+		const selectPattern = customSelectConfig[selectId];
 		const ul = "ul";
 		const value = 'shellList';
 
@@ -150,6 +227,10 @@ if (selectCustom.length > 0) {
 		for (let index = 0; index < options.length; index++) {
 			const currentOption = options[index];
 			const optionValue = currentOption.value;
+
+			if (currentOption.value === '' && selectPattern.emptyOption.show === false) {
+				continue;
+			}
 
 			shellList += `<li data-value="${optionValue}" class="select__item">`;
 
@@ -171,7 +252,7 @@ if (selectCustom.length > 0) {
 	function createShellTrigger(currentSelect) {
 		let shellTrigger = '';
 		const selectId = currentSelect.getAttribute('id');
-		const selectPattern = arr[selectId];
+		const selectPattern = customSelectConfig[selectId];
 
 		shellTrigger += `<div class="selectShell__trigger">`;
 
@@ -243,12 +324,6 @@ if (selectCustom.length > 0) {
 		return resultString;
 	}
 
-	shellTrigger();
-
-	focusBlur();
-
-	document.addEventListener('click', mouseNavigationSelect);
-
 	//Определение значения для триггера оболочки
 	function shellTrigger(dataItem, selectId) {
 		//Выставляет выбранное значение для всех оболочек при загрузке страницы
@@ -257,7 +332,7 @@ if (selectCustom.length > 0) {
 			for (let index = 0; index < selectCustom.length; index++) {
 				const currentSelect = selectCustom[index];
 				const selectId = currentSelect.getAttribute('id');
-				const selectPattern = arr[selectId];
+				const selectPattern = customSelectConfig[selectId];
 				const selected = selectPattern.selected;
 
 				intoShellTrigger(currentSelect, selected);
@@ -278,7 +353,7 @@ if (selectCustom.length > 0) {
 	//Вставка контента в триггер оболочки
 	function intoShellTrigger(currentSelect, selected) {
 		const selectId = currentSelect.getAttribute('id');
-		const selectPattern = arr[selectId];
+		const selectPattern = customSelectConfig[selectId];
 		const textTag = selectPattern.text.tag;
 		const currentTrigger = currentSelect.querySelector('.selectShell__trigger');
 		const triggerImage = currentTrigger.querySelector('img');
@@ -287,19 +362,6 @@ if (selectCustom.length > 0) {
 		let currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
 		let optionSrc = currentOption.getAttribute('data-img');
 		let optionText = '';
-
-		// if (selected) {
-		// 	currentOption = currentSelect.querySelector('option[value="' + selected + '"]');
-		// } else {
-		// 	const options = currentSelect.querySelectorAll('option');
-		// 	currentOption = options[0];
-		// }
-
-		// if (currentOption.hasAttribute("data-img")) {
-		// 	optionSrc = currentOption.getAttribute('data-img');
-		// } else {
-		// 	optionSrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgqAcAAIIAgLO2btEAAAAASUVORK5CYII=';
-		// }
 
 		if (currentOption.textContent) {
 			optionText = currentOption.textContent;
